@@ -17,14 +17,32 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node ./node_modules/typeorm/cli",
+    "db:migrate:dev": "nest build && npm run typeorm migration:run -- -d build/dist/database/config/migration.config.js",
+    "migration:create": "nest build && npm run typeorm -- migration:create build/src/database/migrations/changes",
+    "migration:generate": "nest build && npx typeorm migration:generate build/dist/database/migrations -d build/dist/database/config/migration.config.js",
+    "db:migrate:dev:rollback": "nest build && npm run typeorm -- -d build/dist/database/config/app.config.js migration:revert",
+    "typeorm:generate-migration": "npx typeorm migration:generate -d build/dist/database/config/migration.config.js",
+    "typeorm:create-migration": "npm run typeorm -- migration:create ./src/database/migrations/$npm_config_name",
+    "typeorm:migrate": "npm run typeorm migration:run -- -d build/dist/database/config/migration.config.js",
+    "typeorm:migrate-prod": "npm run typeorm migration:run -- -d ./build/dist/database/config/prod.migration.config.js",
+    "typeorm:migrate:undo": "npm run typeorm -- -d ./src/database/config/migration.config.ts migration:revert",
+    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config -n ./src/database/config/migration.config.ts",
+    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n ./src/database/config/migration.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
-    "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "@nestjs/swagger": "^7.1.11",
+    "@nestjs/typeorm": "^10.0.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "pg": "^8.11.5",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
