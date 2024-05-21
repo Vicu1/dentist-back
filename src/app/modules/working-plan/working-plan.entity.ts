@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany } from 'typeorm';
-import { TimestampEntity } from '@/app/entities/timestamp.entity';
+import { TimestampEntity } from '@/app/base/timestamp.entity';
 import { WeekDaysEnum } from '@/app/modules/working-plan/types/week-days.enum';
 import { WorkerEntity } from '@/app/modules/worker/worker.entity';
 

@@ -1,28 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { WorkerEntity } from '@/app/modules/worker/worker.entity';
 import {
   PageDto,
   PageMetaDto,
   PageOptionsDto,
 } from '@/app/response/dto/paginated-response.dto';
-import { WorkerItemDto } from '@/app/modules/worker/dto/worker-item.dto';
+import { OfficeEntity } from '@/app/modules/office/office.entity';
+import { OfficeItemDto } from '@/app/modules/office/dto/office-item.dto';
 
 @Injectable()
-export class WorkerRepository extends Repository<WorkerEntity> {
+export class OfficeRepository extends Repository<OfficeEntity> {
   constructor(private readonly dataSource: DataSource) {
-    super(WorkerEntity, dataSource.createEntityManager());
+    super(OfficeEntity, dataSource.createEntityManager());
   }
 
   async findAllAndCount(
     pageOptionsDto: PageOptionsDto,
-  ): Promise<PageDto<WorkerItemDto>> {
+  ): Promise<PageDto<OfficeItemDto>> {
     const [entities, itemCount] = await this.findAndCount({
       order: {
         [pageOptionsDto.orderBy || 'id']: pageOptionsDto.order,
       },
       take: pageOptionsDto.per_page,
-      relations: ['office', 'working_plans'],
       skip: ((pageOptionsDto.page || 1) - 1) * pageOptionsDto.per_page,
     });
 

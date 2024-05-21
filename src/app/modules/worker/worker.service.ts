@@ -17,7 +17,7 @@ export class WorkerService {
   }
 
   async create(workerCreateDto: WorkerCreateDto) {
-    return this.workerRepository.save(workerCreateDto);
+    return this.workerRepository.create(workerCreateDto);
   }
 
   async update(id: number, workerUpdateDto: WorkerUpdateDto) {

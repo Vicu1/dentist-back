@@ -5,6 +5,10 @@ import { Length } from 'class-validator';
 @Exclude()
 export class WorkerCreateDto {
   @Expose()
+  @ApiProperty({ example: 2, description: 'Office id' })
+  officeId: number;
+
+  @Expose()
   @ApiProperty({ example: 'Constantin', description: 'First name' })
   @Length(2, 50)
   first_name: string;

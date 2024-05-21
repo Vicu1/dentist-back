@@ -18,7 +18,6 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { WorkerService } from '@/app/modules/worker/worker.service';
 import { WorkerItemDto } from '@/app/modules/worker/dto/worker-item.dto';
 import {
   PageDto,
@@ -26,11 +25,12 @@ import {
 } from '@/app/response/dto/paginated-response.dto';
 import { WorkerCreateDto } from '@/app/modules/worker/dto/worker-create.dto';
 import { WorkerUpdateDto } from '@/app/modules/worker/dto/worker-update.dto';
+import { WorkerAdminService } from '@/app/modules/worker/worker.admin.service';
 
 @ApiTags('Admin workers')
 @Controller('/admin/workers')
 export class WorkerAdminController {
-  constructor(private readonly workerService: WorkerService) {}
+  constructor(private readonly workerAdminService: WorkerAdminService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get workers' })
@@ -44,7 +44,7 @@ export class WorkerAdminController {
   ) {
     return response
       .status(HttpStatus.OK)
-      .send(await this.workerService.findAllAndCount(pageOptionsDto));
+      .send(await this.workerAdminService.findAllAndCount(pageOptionsDto));
   }
 
   @Post()
@@ -58,7 +58,7 @@ export class WorkerAdminController {
   ) {
     return response
       .status(HttpStatus.OK)
-      .send(await this.workerService.create(workerCreateDto));
+      .send(await this.workerAdminService.create(workerCreateDto));
   }
 
   @Put(':id')
@@ -74,7 +74,7 @@ export class WorkerAdminController {
   ) {
     return response
       .status(HttpStatus.OK)
-      .send(await this.workerService.update(id, workerUpdateDto));
+      .send(await this.workerAdminService.update(id, workerUpdateDto));
   }
 
   @Delete(':id')
@@ -89,6 +89,6 @@ export class WorkerAdminController {
   ) {
     return response
       .status(HttpStatus.OK)
-      .send(await this.workerService.delete(id));
+      .send(await this.workerAdminService.delete(id));
   }
 }

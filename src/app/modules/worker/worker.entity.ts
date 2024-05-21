@@ -1,6 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import { TimestampEntity } from '@/app/entities/timestamp.entity';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import { TimestampEntity } from '@/app/base/timestamp.entity';
 import { WorkingPlanEntity } from '@/app/modules/working-plan/working-plan.entity';
+import { OfficeEntity } from '@/app/modules/office/office.entity';
 
 @Entity('workers')
 export class WorkerEntity extends TimestampEntity {
@@ -18,6 +19,12 @@ export class WorkerEntity extends TimestampEntity {
   })
   last_name: string;
 
+  @Column({
+    nullable: false,
+    type: 'int',
+  })
+  officeId: number;
+
   @ManyToMany(() => WorkingPlanEntity, (workingPlan) => workingPlan.workers)
   @JoinTable({
     name: 'worker_working_plans',
@@ -31,4 +38,7 @@ export class WorkerEntity extends TimestampEntity {
     },
   })
   working_plans: WorkingPlanEntity[];
+
+  @ManyToOne(() => OfficeEntity, (office) => office.workers)
+  office: OfficeEntity;
 }
