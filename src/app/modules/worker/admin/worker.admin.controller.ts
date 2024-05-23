@@ -25,7 +25,7 @@ import {
 } from '@/app/response/dto/paginated-response.dto';
 import { WorkerCreateDto } from '@/app/modules/worker/dto/worker-create.dto';
 import { WorkerUpdateDto } from '@/app/modules/worker/dto/worker-update.dto';
-import { WorkerAdminService } from '@/app/modules/worker/worker.admin.service';
+import { WorkerAdminService } from '@/app/modules/worker/admin/worker.admin.service';
 
 @ApiTags('Admin workers')
 @Controller('/admin/workers')
@@ -58,7 +58,9 @@ export class WorkerAdminController {
   ) {
     return response
       .status(HttpStatus.OK)
-      .send(await this.workerAdminService.create(workerCreateDto));
+      .send(
+        await this.workerAdminService.createAndAddWorkingPlans(workerCreateDto),
+      );
   }
 
   @Put(':id')

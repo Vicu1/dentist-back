@@ -33,6 +33,11 @@ export class CreateTablesWorkerAndWorkingPlans1716113615436
             isNullable: false,
           },
           {
+            name: 'start_work_year',
+            type: 'int',
+            isNullable: false,
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'now()',
@@ -73,6 +78,21 @@ export class CreateTablesWorkerAndWorkingPlans1716113615436
             isNullable: true,
           },
           {
+            name: 'start_break_hour',
+            type: 'time',
+            isNullable: true,
+          },
+          {
+            name: 'end_break_hour',
+            type: 'time',
+            isNullable: true,
+          },
+          {
+            name: 'worker_id',
+            type: 'int',
+            isNullable: false,
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'now()',
@@ -85,25 +105,8 @@ export class CreateTablesWorkerAndWorkingPlans1716113615436
         ],
       }),
     );
-
-    await queryRunner.createTable(
-      new Table({
-        name: 'worker_working_plans',
-        columns: [
-          {
-            name: 'worker_id',
-            type: 'int',
-          },
-          {
-            name: 'working_plan_id',
-            type: 'int',
-          },
-        ],
-      }),
-    );
-
     await queryRunner.createForeignKey(
-      'worker_working_plans',
+      'working_plans',
       new TableForeignKey({
         columnNames: ['worker_id'],
         referencedColumnNames: ['id'],
@@ -111,20 +114,9 @@ export class CreateTablesWorkerAndWorkingPlans1716113615436
         onDelete: 'CASCADE',
       }),
     );
-
-    await queryRunner.createForeignKey(
-      'worker_working_plans',
-      new TableForeignKey({
-        columnNames: ['working_plan_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'working_plans',
-        onDelete: 'CASCADE',
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('worker_working_plans');
     await queryRunner.dropTable('working_plans');
     await queryRunner.dropTable('workers');
   }

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { TimestampEntity } from '@/app/base/timestamp.entity';
 import { WorkingPlanEntity } from '@/app/modules/working-plan/working-plan.entity';
 import { OfficeEntity } from '@/app/modules/office/office.entity';
@@ -23,22 +23,18 @@ export class WorkerEntity extends TimestampEntity {
     nullable: false,
     type: 'int',
   })
-  officeId: number;
+  start_work_year: number;
 
-  @ManyToMany(() => WorkingPlanEntity, (workingPlan) => workingPlan.workers)
-  @JoinTable({
-    name: 'worker_working_plans',
-    joinColumn: {
-      name: 'worker_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'working_plan_id',
-      referencedColumnName: 'id',
-    },
+  @Column({
+    nullable: false,
+    type: 'int',
   })
+  office_id: number;
+
+  @OneToMany(() => WorkingPlanEntity, (workingPlan) => workingPlan.worker)
   working_plans: WorkingPlanEntity[];
 
   @ManyToOne(() => OfficeEntity, (office) => office.workers)
+  @JoinColumn({ name: 'office_id' })
   office: OfficeEntity;
 }

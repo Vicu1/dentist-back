@@ -1,11 +1,11 @@
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Length } from 'class-validator';
+import { IsInt, Length } from 'class-validator';
 
 @Exclude()
 export class WorkerCreateDto {
   @Expose()
-  @ApiProperty({ example: 2, description: 'Office id' })
+  @ApiProperty({ example: 1, description: 'Office id' })
   officeId: number;
 
   @Expose()
@@ -17,4 +17,9 @@ export class WorkerCreateDto {
   @ApiProperty({ example: 'Frunza', description: 'Last name' })
   @Length(2, 50)
   last_name: string;
+
+  @Expose()
+  @ApiProperty({ example: 2014, description: 'Start work year' })
+  @IsInt()
+  start_work_year: number;
 }
