@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { TimestampEntity } from '@/app/base/timestamp.entity';
 import { WorkingPlanEntity } from '@/app/modules/working-plan/working-plan.entity';
 import { OfficeEntity } from '@/app/modules/office/office.entity';
+import { WorkerProcedureEntity } from '@/app/modules/worker-procedure/worker-procedure.entity';
 
 @Entity('workers')
 export class WorkerEntity extends TimestampEntity {
@@ -37,4 +38,10 @@ export class WorkerEntity extends TimestampEntity {
   @ManyToOne(() => OfficeEntity, (office) => office.workers)
   @JoinColumn({ name: 'office_id' })
   office: OfficeEntity;
+
+  @OneToMany(
+    () => WorkerProcedureEntity,
+    (workerProcedure) => workerProcedure.worker,
+  )
+  procedures: WorkerProcedureEntity[];
 }

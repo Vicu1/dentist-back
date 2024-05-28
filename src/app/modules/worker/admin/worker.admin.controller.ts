@@ -76,7 +76,12 @@ export class WorkerAdminController {
   ) {
     return response
       .status(HttpStatus.OK)
-      .send(await this.workerAdminService.update(id, workerUpdateDto));
+      .send(
+        await this.workerAdminService.updateAndChangeProcedures(
+          id,
+          workerUpdateDto,
+        ),
+      );
   }
 
   @Delete(':id')

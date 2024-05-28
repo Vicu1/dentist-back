@@ -88,7 +88,7 @@ export class PageMetaDto {
 
 export class PageDto<T> {
   @IsArray()
-  @ApiProperty({ isArray: true })
+  @ApiProperty({ isArray: true, type: 'object' })
   readonly data: T[];
 
   @ApiProperty({ type: () => PageMetaDto })

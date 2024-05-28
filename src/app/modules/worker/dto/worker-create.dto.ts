@@ -1,12 +1,12 @@
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, Length } from 'class-validator';
+import { ArrayUnique, IsInt, Length } from 'class-validator';
 
 @Exclude()
 export class WorkerCreateDto {
   @Expose()
   @ApiProperty({ example: 1, description: 'Office id' })
-  officeId: number;
+  office_id: number;
 
   @Expose()
   @ApiProperty({ example: 'Constantin', description: 'First name' })
@@ -22,4 +22,9 @@ export class WorkerCreateDto {
   @ApiProperty({ example: 2014, description: 'Start work year' })
   @IsInt()
   start_work_year: number;
+
+  @Expose()
+  @ApiProperty({ example: [1, 2], description: 'Procedures', isArray: true })
+  @ArrayUnique()
+  procedures: number[];
 }
