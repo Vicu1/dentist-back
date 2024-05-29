@@ -1,4 +1,5 @@
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -29,6 +30,7 @@ import { ProcedureUpdateDto } from '@/app/modules/procedure/dto/procedure-update
 
 @ApiTags('Admin procedures')
 @Controller('/admin/procedures')
+@ApiBearerAuth()
 export class ProcedureAdminController {
   constructor(private readonly procedureAdminService: ProcedureAdminService) {}
 

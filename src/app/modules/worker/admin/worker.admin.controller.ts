@@ -1,4 +1,5 @@
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -29,6 +30,7 @@ import { WorkerAdminService } from '@/app/modules/worker/admin/worker.admin.serv
 
 @ApiTags('Admin workers')
 @Controller('/admin/workers')
+@ApiBearerAuth()
 export class WorkerAdminController {
   constructor(private readonly workerAdminService: WorkerAdminService) {}
 

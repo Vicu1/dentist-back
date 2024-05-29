@@ -1,4 +1,5 @@
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -29,6 +30,7 @@ import { OfficeUpdateDto } from '@/app/modules/office/dto/office-update.dto';
 
 @ApiTags('Admin offices')
 @Controller('/admin/offices')
+@ApiBearerAuth()
 export class OfficeAdminController {
   constructor(private readonly officeService: OfficeService) {}
 

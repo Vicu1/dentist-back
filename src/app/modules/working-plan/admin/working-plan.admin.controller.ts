@@ -1,4 +1,5 @@
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiOkResponse,
   ApiOperation,
@@ -22,6 +23,7 @@ import { WorkingPlanUpdateDto } from '@/app/modules/working-plan/dto/working-pla
 
 @ApiTags('Admin working plans')
 @Controller('/admin/working-plans')
+@ApiBearerAuth()
 export class WorkingPlanAdminController {
   constructor(
     private readonly workingPlanAdminService: WorkingPlanAdminService,
