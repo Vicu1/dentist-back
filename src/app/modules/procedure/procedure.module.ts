@@ -9,7 +9,7 @@ import { WorkerProcedureEntity } from '@/app/modules/worker-procedure/worker-pro
 @Module({
   imports: [TypeOrmModule.forFeature([ProcedureEntity, WorkerProcedureEntity])],
   controllers: [ProcedureAdminController],
-  exports: [ProcedureRepository],
+  exports: [ProcedureRepository, ProcedureAdminService],
   providers: [ProcedureAdminService, ProcedureRepository],
 })
 export class ProcedureModule {}

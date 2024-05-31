@@ -5,6 +5,8 @@ import { ProcedureModule } from '@/app/modules/procedure/procedure.module';
 import { WorkerProcedureModule } from '@/app/modules/worker-procedure/worker-procedure.module';
 import { UserModule } from '@/app/modules/user/user.module';
 import { AuthModule } from '@/app/modules/auth/auth.module';
+import { AppointmentModule } from '@/app/modules/appointment/appointment.module';
+import { ClientModule } from '@/app/modules/client/client.module';
 
 export default [
   OfficeModule,
@@ -14,4 +16,6 @@ export default [
   WorkerProcedureModule,
   UserModule,
   AuthModule,
+  AppointmentModule,
+  ClientModule,
 ];

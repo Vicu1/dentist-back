@@ -3,6 +3,7 @@ import { WorkerAdminController } from '@/app/modules/worker/admin/worker.admin.c
 import { OfficeAdminController } from '@/app/modules/office/office.admin.controller';
 import { WorkingPlanAdminController } from '@/app/modules/working-plan/admin/working-plan.admin.controller';
 import { ProcedureAdminController } from '@/app/modules/procedure/admin/procedure.admin.controller';
+import { AppointmentAdminController } from '@/app/modules/appointment/admin/appointment.admin.controller';
 
 export default [
   {
@@ -20,5 +21,9 @@ export default [
   {
     guard: ParseTokenMiddleware,
     routes: ProcedureAdminController,
+  },
+  {
+    guard: ParseTokenMiddleware,
+    routes: AppointmentAdminController,
   },
 ];

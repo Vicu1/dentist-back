@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { WeekDaysEnum } from '@/app/modules/working-plan/types/week-days.enum';
 import { WorkingPlanRepository } from '@/app/modules/working-plan/working-plan.repository';
 import { WorkingPlanUpdateDto } from '@/app/modules/working-plan/dto/working-plan-update.dto';
-
+import * as dayjs from 'dayjs';
 @Injectable()
 export class WorkingPlanAdminService {
   constructor(private readonly workingPlanRepository: WorkingPlanRepository) {}
@@ -32,5 +32,22 @@ export class WorkingPlanAdminService {
 
   async getPlansForWorker(worker_id: number) {
     return await this.workingPlanRepository.find({ where: { worker_id } });
+  }
+
+  async getPlansForWorkerAndDay(worker_id: number, day: Date) {
+    const weekDay = dayjs(day).day();
+    const days = {
+      0: WeekDaysEnum.SUNDAY,
+      1: WeekDaysEnum.MONDAY,
+      2: WeekDaysEnum.TUESDAY,
+      3: WeekDaysEnum.WEDNESDAY,
+      4: WeekDaysEnum.THURSDAY,
+      5: WeekDaysEnum.FRIDAY,
+      6: WeekDaysEnum.SATURDAY,
+    };
+
+    return await this.workingPlanRepository.findOne({
+      where: { worker_id, working_day: days[weekDay] },
+    });
   }
 }
