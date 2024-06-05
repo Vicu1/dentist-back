@@ -8,6 +8,8 @@ import { ProcedureAdminService } from '@/app/modules/procedure/admin/procedure.a
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+import { AppointmentNotifyService } from '@/app/modules/appointment/appointment.notify.service';
+import { WorkerService } from '@/app/modules/worker/worker.service';
 
 dayjs.extend(isBetween);
 dayjs.extend(customParseFormat);
@@ -18,13 +20,15 @@ export class AppointmentService {
     private readonly clientAdminService: ClientAdminService,
     private readonly workingPlanAdminService: WorkingPlanAdminService,
     private readonly procedureAdminService: ProcedureAdminService,
+    private readonly appointmentNotifyService: AppointmentNotifyService,
+    private readonly workerService: WorkerService,
   ) {}
 
   private addMinutesToTime(time: string, minutesToAdd: number): string {
     const date = dayjs(`1970-01-01T${time}`);
     const newDate = date.add(minutesToAdd, 'minute');
 
-    return newDate.format('HH:mm:ss');
+    return newDate.format('HH:mm');
   }
 
   private isTimeBetween(
@@ -32,9 +36,9 @@ export class AppointmentService {
     startTime: Date,
     endTime: Date,
   ): boolean {
-    const target = dayjs(targetTime, 'HH:mm:ss');
-    const start = dayjs(startTime, 'HH:mm:ss');
-    const end = dayjs(endTime, 'HH:mm:ss');
+    const target = dayjs(targetTime, 'HH:mm');
+    const start = dayjs(startTime, 'HH:mm');
+    const end = dayjs(endTime, 'HH:mm');
 
     return target.isBetween(start, end, null, '[]');
   }
@@ -88,6 +92,7 @@ export class AppointmentService {
       appointmentCreateDto.procedure_id,
       appointmentCreateDto.worker_id,
     );
+
     const endTime = this.addMinutesToTime(
       appointmentCreateDto.start_time,
       procedure.duration,
@@ -137,9 +142,15 @@ export class AppointmentService {
 
     await this.checkWorkingPlan(appointmentCreateDto, endTime);
 
+    const worker = await this.workerService.findOne(
+      appointmentCreateDto.worker_id,
+    );
+
     return {
       ...appointmentCreateDto,
       end_time: endTime,
+      procedure,
+      worker_name: `${worker.first_name} ${worker.last_name}`,
     };
   }
 
@@ -152,26 +163,20 @@ export class AppointmentService {
     const availableAppointment =
       await this.checkAppointment(appointmentCreateDto);
 
-    // const existAppointment = await this.appointmentRepository.findOne({
-    //   where: {
-    //     client_id: client.id,
-    //     day: appointmentCreateDto.day,
-    //     start_time: appointmentCreateDto.start_time,
-    //     end_time: availableAppointment.end_time,
-    //   },
-    // });
-    //
-    // if (existAppointment) {
-    //   throw new BadRequestException(
-    //     'There is an appointment at this time and for this client',
-    //   );
-    // }
-
-    return await this.appointmentRepository.save({
+    const appointment = await this.appointmentRepository.save({
       ...appointmentCreateDto,
       client_id: client.id,
       status: StatusesEnum.NEW,
       end_time: availableAppointment.end_time,
     });
+
+    await this.appointmentNotifyService.sendTelegramNotification(
+      appointmentCreateDto,
+      availableAppointment.end_time,
+      availableAppointment.procedure.name,
+      availableAppointment.worker_name,
+    );
+
+    return appointment;
   }
 }

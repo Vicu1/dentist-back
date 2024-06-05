@@ -17,6 +17,7 @@ import { WorkerProcedureModule } from '@/app/modules/worker-procedure/worker-pro
     WorkingPlanModule,
     WorkerProcedureModule,
   ],
+  exports: [WorkerService],
   controllers: [WorkerAdminController, WorkerController],
   providers: [WorkerService, WorkerAdminService, WorkerRepository],
 })

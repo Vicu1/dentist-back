@@ -22,6 +22,8 @@ const ConfigEnv = {
   DOCS_DESCRIPTION: process.env.DOCS_DESCRIPTION,
   APP_DEFAULT_TIMEOUT: Number(process.env.APP_DEFAULT_TIMEOUT),
   TOKEN_EXPIRES_IN: Number(process.env.TOKEN_EXPIRES_IN),
+  TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
+  TELEGRAM_BOT_CHAT_ID: process.env.TELEGRAM_BOT_CHAT_ID,
   JWT_SECRET: privateKey,
   JWT_PUBLIC: publicKey,
 };
