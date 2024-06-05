@@ -84,7 +84,6 @@ export class AppointmentService {
   }
 
   private async checkAppointment(appointmentCreateDto: AppointmentCreateDto) {
-    //TODO: add validation if there is appointment in this period of time
     const procedure = await this.procedureAdminService.getOneByIdAndWorker(
       appointmentCreateDto.procedure_id,
       appointmentCreateDto.worker_id,
@@ -93,6 +92,48 @@ export class AppointmentService {
       appointmentCreateDto.start_time,
       procedure.duration,
     );
+
+    const today = dayjs().startOf('day');
+    const oneDayAfterToday = today.add(1, 'day');
+    const twoWeeksFromToday = today.add(14, 'day');
+
+    const appointmentDay = dayjs(appointmentCreateDto.day);
+    if (
+      appointmentDay.isBefore(oneDayAfterToday) ||
+      appointmentDay.isAfter(twoWeeksFromToday)
+    ) {
+      throw new BadRequestException(
+        'Appointment day must be at least one day after today and not more than 2 weeks from today.',
+      );
+    }
+
+    const existingAppointments = await this.appointmentRepository.find({
+      where: {
+        day: appointmentCreateDto.day,
+        status: StatusesEnum.NEW || StatusesEnum.CONFIRMED,
+      },
+    });
+    const newStart = dayjs(
+      `${appointmentCreateDto.day}T${appointmentCreateDto.start_time}`,
+    );
+    const newEnd = dayjs(`${appointmentCreateDto.day}T${endTime}`);
+
+    for (const appointment of existingAppointments) {
+      const existingStart = dayjs(
+        `${appointment.day}T${appointment.start_time}`,
+      );
+      const existingEnd = dayjs(`${appointment.day}T${appointment.end_time}`);
+
+      if (
+        newStart.isBetween(existingStart, existingEnd, null, '[)') ||
+        newEnd.isBetween(existingStart, existingEnd, null, '(]') ||
+        (newStart.isBefore(existingStart) && newEnd.isAfter(existingEnd))
+      ) {
+        throw new BadRequestException(
+          'Appointment time conflicts with an existing appointment.',
+        );
+      }
+    }
 
     await this.checkWorkingPlan(appointmentCreateDto, endTime);
 
@@ -111,20 +152,20 @@ export class AppointmentService {
     const availableAppointment =
       await this.checkAppointment(appointmentCreateDto);
 
-    const existAppointment = await this.appointmentRepository.findOne({
-      where: {
-        client_id: client.id,
-        day: appointmentCreateDto.day,
-        start_time: appointmentCreateDto.start_time,
-        end_time: availableAppointment.end_time,
-      },
-    });
-
-    if (existAppointment) {
-      throw new BadRequestException(
-        'There is an appointment at this time and for this client',
-      );
-    }
+    // const existAppointment = await this.appointmentRepository.findOne({
+    //   where: {
+    //     client_id: client.id,
+    //     day: appointmentCreateDto.day,
+    //     start_time: appointmentCreateDto.start_time,
+    //     end_time: availableAppointment.end_time,
+    //   },
+    // });
+    //
+    // if (existAppointment) {
+    //   throw new BadRequestException(
+    //     'There is an appointment at this time and for this client',
+    //   );
+    // }
 
     return await this.appointmentRepository.save({
       ...appointmentCreateDto,

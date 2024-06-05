@@ -14,7 +14,7 @@ export class AppointmentCreateDto {
   client_phone: number;
 
   @Expose()
-  @ApiProperty({ example: '01.09.2023', description: 'Name' })
+  @ApiProperty({ example: '2023-09-12', description: 'Name' })
   day: Date;
 
   @Expose()
