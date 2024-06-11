@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Injectable,
   NestMiddleware,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Request, Response } from 'express';
@@ -24,7 +24,7 @@ export class ParseTokenMiddleware implements NestMiddleware {
       };
       next();
     } catch (e) {
-      throw new BadRequestException('Invalid token');
+      throw new UnauthorizedException('Invalid token');
     }
   }
 
