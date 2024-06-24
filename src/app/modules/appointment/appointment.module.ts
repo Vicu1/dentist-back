@@ -20,6 +20,7 @@ import { WorkerModule } from '@/app/modules/worker/worker.module';
     ProcedureModule,
     WorkerModule,
   ],
+  exports: [AppointmentAdminService],
   controllers: [AppointmentAdminController, AppointmentController],
   providers: [
     AppointmentRepository,

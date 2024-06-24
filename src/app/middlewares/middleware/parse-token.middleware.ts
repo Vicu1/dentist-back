@@ -24,7 +24,7 @@ export class ParseTokenMiddleware implements NestMiddleware {
       };
       next();
     } catch (e) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Неверный токен');
     }
   }
 

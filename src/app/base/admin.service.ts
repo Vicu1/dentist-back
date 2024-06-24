@@ -30,7 +30,7 @@ export class AdminService<Entity> {
     try {
       return await this.repository.delete(id);
     } catch (e) {
-      throw new HttpException('Cant delete entity with relations', 400);
+      throw new HttpException('Невозможно удалить сущность со связями', 400);
     }
   }
 }

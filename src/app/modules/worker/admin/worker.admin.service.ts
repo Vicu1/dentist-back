@@ -22,6 +22,18 @@ export class WorkerAdminService extends AdminService<WorkerEntity> {
     return await this.workerRepository.findAllAndCount(pageOptionsDto);
   }
 
+  async findOneWithProcedures(id: number) {
+    const worker = await this.workerRepository.findOne({
+      where: { id },
+      relations: ['procedures'],
+    });
+
+    return {
+      ...worker,
+      procedures: worker.procedures.map((procedure) => procedure.procedure_id),
+    };
+  }
+
   async createAndAddWorkingPlans(workerCreateDto: WorkerCreateDto) {
     const worker = await this.workerRepository.save({
       ...workerCreateDto,

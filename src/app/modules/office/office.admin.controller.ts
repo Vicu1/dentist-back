@@ -49,6 +49,18 @@ export class OfficeAdminController {
       .send(await this.officeService.findAllAndCount(pageOptionsDto));
   }
 
+  @Get('list')
+  @ApiOperation({ summary: 'Get offices' })
+  @ApiOkResponse({
+    description: 'Offices',
+    type: OfficeItemDto,
+  })
+  async getList(@Res() response: Response) {
+    return response
+      .status(HttpStatus.OK)
+      .send(await this.officeService.getList());
+  }
+
   @Post()
   @ApiOperation({ summary: 'Office create' })
   @ApiOkResponse({

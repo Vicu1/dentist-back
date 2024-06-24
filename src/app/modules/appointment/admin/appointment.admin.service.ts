@@ -42,7 +42,17 @@ export class AppointmentAdminService extends AdminService<AppointmentEntity> {
       status: StatusesEnum.CONFIRMED,
     });
   }
+  public async markAppointmentsAsCanceled(clientId: number) {
+    const appointments = await this.appointmentRepository.find({
+      where: { client_id: clientId },
+    });
 
+    for (const appointment of appointments) {
+      await this.appointmentRepository.update(appointment.id, {
+        status: StatusesEnum.REJECTED,
+      });
+    }
+  }
   async reject(id: number) {
     const appointment = await this.appointmentRepository.findOne({
       where: { id },

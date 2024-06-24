@@ -70,6 +70,21 @@ export class ProcedureAdminController {
       .send(await this.procedureAdminService.create(procedureCreateDto));
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Procedure get by id' })
+  @ApiOkResponse({
+    description: 'Procedure get by id',
+  })
+  @ApiParam({ name: 'id', description: 'Procedure id', type: 'number' })
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() response: Response,
+  ) {
+    return response
+      .status(HttpStatus.OK)
+      .send(await this.procedureAdminService.findOne({ where: { id } }));
+  }
+
   @Put(':id')
   @ApiOperation({ summary: 'Procedure update' })
   @ApiOkResponse({

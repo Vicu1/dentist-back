@@ -65,6 +65,21 @@ export class WorkerAdminController {
       );
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Worker get by id' })
+  @ApiOkResponse({
+    description: 'Worker get by id',
+  })
+  @ApiParam({ name: 'id', description: 'Worker id', type: 'number' })
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() response: Response,
+  ) {
+    return response
+      .status(HttpStatus.OK)
+      .send(await this.workerAdminService.findOneWithProcedures(id));
+  }
+
   @Put(':id')
   @ApiOperation({ summary: 'Worker update' })
   @ApiOkResponse({

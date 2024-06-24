@@ -13,4 +13,8 @@ export class OfficeService extends AdminService<OfficeEntity> {
   async findAllAndCount(pageOptionsDto: PageOptionsDto) {
     return await this.officeRepository.findAllAndCount(pageOptionsDto);
   }
+
+  async getList() {
+    return await this.officeRepository.find({ select: ['id', 'name'] });
+  }
 }

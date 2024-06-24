@@ -160,6 +160,10 @@ export class AppointmentService {
       phone: appointmentCreateDto.client_phone,
     });
 
+    if (client.is_blocked) {
+      throw new BadRequestException('Вы не можешь записаться на прием');
+    }
+
     const availableAppointment =
       await this.checkAppointment(appointmentCreateDto);
 
