@@ -26,6 +26,7 @@ import { AppointmentItemDto } from '@/app/modules/appointment/dto/appointment-it
 import { AppointmentAdminService } from '@/app/modules/appointment/admin/appointment.admin.service';
 import { AppointmentAdminCreateDto } from '@/app/modules/appointment/dto/appointment-admin-create.dto';
 import { AppointmentUpdateDto } from '@/app/modules/appointment/dto/appointment-update.dto';
+import { AppointmentService } from '@/app/modules/appointment/appointment.service';
 
 @ApiTags('Admin appointments')
 @Controller('/admin/appointments')
@@ -33,6 +34,7 @@ import { AppointmentUpdateDto } from '@/app/modules/appointment/dto/appointment-
 export class AppointmentAdminController {
   constructor(
     private readonly appointmentAdminService: AppointmentAdminService,
+    private readonly appointmentService: AppointmentService,
   ) {}
 
   @Get()
@@ -56,12 +58,12 @@ export class AppointmentAdminController {
     description: 'Appointment create',
   })
   async create(
-    @Body() procedureCreateDto: AppointmentAdminCreateDto,
+    @Body() appointmentAdminCreateDto: AppointmentAdminCreateDto,
     @Res() response: Response,
   ) {
     return response
       .status(HttpStatus.OK)
-      .send(await this.appointmentAdminService.create(procedureCreateDto));
+      .send(await this.appointmentService.create(appointmentAdminCreateDto));
   }
 
   @Patch(':id/confirm')

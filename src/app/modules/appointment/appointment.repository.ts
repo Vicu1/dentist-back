@@ -19,7 +19,7 @@ export class AppointmentRepository extends Repository<AppointmentEntity> {
   ): Promise<PageDto<AppointmentItemDto>> {
     const [entities, itemCount] = await this.findAndCount({
       order: {
-        [pageOptionsDto.orderBy || 'id']: pageOptionsDto.order,
+        [pageOptionsDto.orderBy || 'day']: pageOptionsDto.order || 'DESC',
       },
       take: pageOptionsDto.per_page,
       skip: ((pageOptionsDto.page || 1) - 1) * pageOptionsDto.per_page,

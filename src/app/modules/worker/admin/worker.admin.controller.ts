@@ -65,6 +65,14 @@ export class WorkerAdminController {
       );
   }
 
+  @Get('/list')
+  @ApiOperation({ summary: 'Get workers list' })
+  async getList(@Res() response: Response) {
+    return response
+      .status(HttpStatus.OK)
+      .send(await this.workerAdminService.getList());
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Worker get by id' })
   @ApiOkResponse({

@@ -34,6 +34,16 @@ export class WorkerAdminService extends AdminService<WorkerEntity> {
     };
   }
 
+  getList() {
+    return this.workerRepository
+      .createQueryBuilder('worker')
+      .select([
+        'worker.id as id',
+        "CONCAT(worker.first_name, ' ', worker.last_name) as name",
+      ])
+      .getRawMany();
+  }
+
   async createAndAddWorkingPlans(workerCreateDto: WorkerCreateDto) {
     const worker = await this.workerRepository.save({
       ...workerCreateDto,

@@ -5,7 +5,16 @@ import { IsOptional, Length } from 'class-validator';
 @Exclude()
 export class AppointmentAdminCreateDto {
   @Expose()
-  @ApiProperty({ example: '01.09.2023', description: 'Name' })
+  @ApiProperty({ example: 'Constantin', description: 'Client name' })
+  @Length(3, 100)
+  client_name: string;
+
+  @Expose()
+  @ApiProperty({ example: 79656546, description: 'Client phone' })
+  client_phone: number;
+
+  @Expose()
+  @ApiProperty({ example: '2024-06-06', description: 'Name' })
   day: Date;
 
   @Expose()
@@ -17,6 +26,10 @@ export class AppointmentAdminCreateDto {
   @Length(10, 200)
   @IsOptional()
   comment: string;
+
+  @Expose()
+  @ApiProperty({ example: 1, description: 'Worker' })
+  worker_id: number;
 
   @Expose()
   @ApiProperty({ example: 1, description: 'Procedure' })
