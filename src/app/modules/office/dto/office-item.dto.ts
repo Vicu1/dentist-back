@@ -16,8 +16,8 @@ export class OfficeItemDto {
   descriptions: string;
 
   @Expose()
-  @ApiProperty({ example: '098545344', description: 'Phone' })
-  phone: number;
+  @ApiProperty({ example: '37398545344', description: 'Phone' })
+  phone: string;
 
   @Expose()
   @ApiProperty({ example: 'str.Decebal', description: 'Address' })

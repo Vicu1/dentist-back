@@ -20,9 +20,9 @@ export class OfficeEntity extends TimestampEntity {
 
   @Column({
     nullable: false,
-    type: 'int',
+    type: 'varchar',
   })
-  phone: number;
+  phone: string;
 
   @Column({
     nullable: false,

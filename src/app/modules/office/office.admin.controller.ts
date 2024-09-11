@@ -75,6 +75,21 @@ export class OfficeAdminController {
       .send(await this.officeService.create(officeCreateDto));
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Office get by id' })
+  @ApiOkResponse({
+    description: 'Office get by id',
+  })
+  @ApiParam({ name: 'id', description: 'Office id', type: 'number' })
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() response: Response,
+  ) {
+    return response
+      .status(HttpStatus.OK)
+      .send(await this.officeService.findOne({ where: { id } }));
+  }
+
   @Put(':id')
   @ApiOperation({ summary: 'Office update' })
   @ApiOkResponse({

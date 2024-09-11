@@ -17,19 +17,20 @@ export class AppointmentRepository extends Repository<AppointmentEntity> {
   async findAllAndCount(
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<AppointmentItemDto>> {
-    const [entities, itemCount] = await this.findAndCount({
-      order: {
-        [pageOptionsDto.orderBy || 'day']: pageOptionsDto.order || 'DESC',
-      },
-      take: pageOptionsDto.per_page,
-      skip: ((pageOptionsDto.page || 1) - 1) * pageOptionsDto.per_page,
-    });
+    const query = this.createQueryBuilder('appointment')
+      // .leftJoinAndSelect('appointment.client', 'client')
+      // .leftJoinAndSelect('appointment.procedure', 'procedure')
+      .select('*')
+      .orderBy(pageOptionsDto.orderBy || 'day', pageOptionsDto.order || 'DESC')
+      .where('appointment.day >= NOW()')
+      .take(pageOptionsDto.per_page)
+      .skip(((pageOptionsDto.page || 1) - 1) * pageOptionsDto.per_page);
 
     const pageMetaDto = new PageMetaDto({
-      itemCount,
+      itemCount: await query.getCount(),
       pageOptionsDto,
     });
 
-    return new PageDto(entities, pageMetaDto);
+    return new PageDto(await query.getRawMany(), pageMetaDto);
   }
 }
