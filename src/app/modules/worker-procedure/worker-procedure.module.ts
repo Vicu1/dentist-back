@@ -16,7 +16,7 @@ import { ProcedureModule } from '@/app/modules/procedure/procedure.module';
     ]),
     ProcedureModule,
   ],
-  exports: [WorkerProcedureAdminService],
+  exports: [WorkerProcedureAdminService, WorkerProcedureRepository],
   providers: [WorkerProcedureAdminService, WorkerProcedureRepository],
 })
 export class WorkerProcedureModule {}

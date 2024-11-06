@@ -34,4 +34,16 @@ export class WorkerController {
   ) {
     response.status(HttpStatus.OK).send(await this.workerService.findOne(id));
   }
+
+  @Get()
+  @ApiOperation({ summary: 'Get workers' })
+  @ApiOkResponse({
+    description: 'Workers',
+    type: WorkerItemDto,
+  })
+  async getList(
+    @Res() response: Response,
+  ) {
+    response.status(HttpStatus.OK).send(await this.workerService.findAll());
+  }
 }

@@ -92,7 +92,7 @@ export class AppointmentService {
       appointmentCreateDto.procedure_id,
       appointmentCreateDto.worker_id,
     );
-
+    console.log(procedure)
     const endTime = this.addMinutesToTime(
       appointmentCreateDto.start_time,
       procedure.duration,

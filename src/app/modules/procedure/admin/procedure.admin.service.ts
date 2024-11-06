@@ -7,10 +7,12 @@ import { PageOptionsDto } from '@/app/response/dto/paginated-response.dto';
 import { AdminService } from '@/app/base/admin.service';
 import { ProcedureEntity } from '@/app/modules/procedure/procedure.entity';
 import { ProcedureRepository } from '@/app/modules/procedure/procedure.repository';
+import {WorkerProcedureRepository} from "@/app/modules/worker-procedure/worker-procedure.repository";
 
 @Injectable()
 export class ProcedureAdminService extends AdminService<ProcedureEntity> {
-  constructor(private readonly procedureRepository: ProcedureRepository) {
+  constructor(private readonly procedureRepository: ProcedureRepository,
+              private readonly workerProcedureRepository: WorkerProcedureRepository) {
     super(procedureRepository);
   }
 
@@ -23,25 +25,23 @@ export class ProcedureAdminService extends AdminService<ProcedureEntity> {
   }
 
   async getOneByIdAndWorker(procedureId: number, workerId: number) {
-    const procedure = await this.procedureRepository.findOne({
+    const existingRelation = await this.workerProcedureRepository.findOne({
       where: {
-        id: procedureId,
+        worker_id: workerId,
+        procedure_id: procedureId
       },
-      relations: ['workers'],
+      relations: ['procedure', 'worker'],
     });
 
-    if (!procedure) {
-      throw new NotFoundException(
-        `Procedure with id: ${procedureId} not found`,
+    if (!existingRelation) {
+      throw new BadRequestException(
+          `Worker with id: ${workerId} can not do this procedure`,
       );
     }
 
-    if (procedure.workers.some((worker) => worker.worker_id === workerId)) {
-      return procedure;
+    return {
+      ...existingRelation.procedure
     }
 
-    throw new BadRequestException(
-      `Worker with id: ${workerId} can not do this procedure`,
-    );
   }
 }

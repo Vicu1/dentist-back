@@ -8,4 +8,8 @@ export class WorkerService {
   async findOne(id: number) {
     return await this.workerRepository.findOne({ where: { id } });
   }
+
+  async findAll() {
+    return await this.workerRepository.find();
+  }
 }
