@@ -33,4 +33,15 @@ export class AppointmentRepository extends Repository<AppointmentEntity> {
 
     return new PageDto(await query.getRawMany(), pageMetaDto);
   }
+
+  async findByWorkerAndDate(workerId: number, date: Date) {
+    // Query for appointments within this date range for the worker
+    return await this.find({
+      where: {
+        worker_id: workerId,
+        day: date,
+      },
+      order: { start_time: 'ASC' },
+    });
+  }
 }

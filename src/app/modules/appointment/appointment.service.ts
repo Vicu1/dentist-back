@@ -10,6 +10,8 @@ import * as isBetween from 'dayjs/plugin/isBetween';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 import { AppointmentNotifyService } from '@/app/modules/appointment/appointment.notify.service';
 import { WorkerService } from '@/app/modules/worker/worker.service';
+import { AppointmentSlotsDto } from '@/app/modules/appointment/dto/appointment-slots.dto';
+import { AppointmentSlotInterface } from '@/app/modules/appointment/types/appointment-slot.interface';
 
 dayjs.extend(isBetween);
 dayjs.extend(customParseFormat);
@@ -92,7 +94,7 @@ export class AppointmentService {
       appointmentCreateDto.procedure_id,
       appointmentCreateDto.worker_id,
     );
-    console.log(procedure)
+
     const endTime = this.addMinutesToTime(
       appointmentCreateDto.start_time,
       procedure.duration,
@@ -182,5 +184,83 @@ export class AppointmentService {
     );
 
     return appointment;
+  }
+
+  async getSlots(
+    procedureId: number,
+    workerId: number,
+    appointmentSlotsDto: AppointmentSlotsDto,
+  ) {
+    const procedure = await this.procedureAdminService.getOneByIdAndWorker(
+      procedureId,
+      workerId,
+    );
+    const selectedDate = new Date(appointmentSlotsDto.date);
+    // const worker = await this.workerService.findOneWithWorkingPeriod(workerId);
+    const workingPlan =
+      await this.workingPlanAdminService.getPlansForWorkerAndDay(
+        workerId,
+        selectedDate,
+      );
+
+    const startTime = new Date(
+      `${appointmentSlotsDto.date}T${workingPlan.start_working_hour}`,
+    );
+    const endTime = new Date(
+      `${appointmentSlotsDto.date}T${workingPlan.end_working_hour}`,
+    );
+    const startBreak = new Date(
+      `${appointmentSlotsDto.date}T${workingPlan.start_break_hour}`,
+    );
+    const endBreak = new Date(
+      `${appointmentSlotsDto.date}T${workingPlan.end_break_hour}`,
+    );
+
+    const bookedAppointments =
+      await this.appointmentRepository.findByWorkerAndDate(
+        workerId,
+        selectedDate,
+      );
+
+    const availableSlots: AppointmentSlotInterface[] = [];
+
+    for (
+      let time = dayjs(startTime);
+      time.isBefore(endTime);
+      time = time.add(procedure.duration, 'minute')
+    ) {
+      const slotEnd = time.add(procedure.duration, 'minute');
+
+      if (time.isBefore(endBreak) && slotEnd.isAfter(startBreak)) {
+        time = dayjs(endBreak).subtract(procedure.duration, 'minutes');
+        continue;
+      }
+
+      if (slotEnd.isAfter(endTime)) continue;
+
+      const isAvailable = bookedAppointments.every((appointment) => {
+        const appointmentStartTime = dayjs(
+          `${appointmentSlotsDto.date}T${appointment.start_time}`,
+        );
+        const appointmentEndTime = dayjs(
+          `${appointmentSlotsDto.date}T${appointment.end_time}`,
+        );
+
+        // Return true if the slot doesn't overlap with the appointment
+        return (
+          slotEnd.isBefore(appointmentStartTime.add(1, 'minute')) ||
+          time.isAfter(appointmentEndTime.subtract(1, 'minute'))
+        );
+      });
+
+      if (isAvailable) {
+        availableSlots.push({
+          start: time.format('HH:mm'),
+          end: slotEnd.format('HH:mm'),
+        });
+      }
+    }
+
+    return availableSlots;
   }
 }

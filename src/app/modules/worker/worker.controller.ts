@@ -41,9 +41,23 @@ export class WorkerController {
     description: 'Workers',
     type: WorkerItemDto,
   })
-  async getList(
+  async getList(@Res() response: Response) {
+    response.status(HttpStatus.OK).send(await this.workerService.findAll());
+  }
+
+  @Get('/procedure/:id')
+  @ApiOperation({ summary: 'Get workers by procedure' })
+  @ApiOkResponse({
+    description: 'Workers by procedure',
+    type: WorkerItemDto,
+  })
+  @ApiParam({ name: 'id', description: 'Procedure id', type: 'number' })
+  async getByProcedure(
+    @Param('id', ParseIntPipe) id: number,
     @Res() response: Response,
   ) {
-    response.status(HttpStatus.OK).send(await this.workerService.findAll());
+    response
+      .status(HttpStatus.OK)
+      .send(await this.workerService.getByProcedure(id));
   }
 }

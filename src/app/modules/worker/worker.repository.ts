@@ -33,4 +33,16 @@ export class WorkerRepository extends Repository<WorkerEntity> {
 
     return new PageDto(entities, pageMetaDto);
   }
+
+  async getWorkersByProcedure(procedureId: number): Promise<WorkerEntity[]> {
+    const query = await this.createQueryBuilder('worker')
+      .leftJoinAndSelect('worker.procedures', 'procedure')
+      .getMany();
+
+    return query.filter((worker) =>
+      worker.procedures.some(
+        (procedure) => procedure.procedure_id === procedureId,
+      ),
+    );
+  }
 }

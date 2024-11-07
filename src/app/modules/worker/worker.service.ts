@@ -9,7 +9,18 @@ export class WorkerService {
     return await this.workerRepository.findOne({ where: { id } });
   }
 
+  async findOneWithWorkingPeriod(id: number) {
+    return await this.workerRepository.findOne({
+      where: { id },
+      relations: ['working_plans'],
+    });
+  }
+
   async findAll() {
     return await this.workerRepository.find();
+  }
+
+  async getByProcedure(id: number) {
+    return await this.workerRepository.getWorkersByProcedure(id);
   }
 }
